@@ -10,6 +10,9 @@ update:
 	uv lock --upgrade
 	uv sync
 
+test:
+	uv run python manage.py test
+
 check:
 	uv run python manage.py check
 	uv run phython manage.py check --deploy

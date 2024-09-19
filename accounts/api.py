@@ -35,7 +35,7 @@ def account_login(request, data: UserLogin):
         return 401, {"message": "Incorrect credentials"}
 
     jwt_token = AccessToken.for_user(user)
-    return 200, {"token": Token(token=str(jwt_token))}
+    return 200, {"token": str(jwt_token)}
 
 
 @router.get("/user", auth=JWTAuth(), response={200: UserOut, 401: Message})
