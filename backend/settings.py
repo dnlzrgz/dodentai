@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "ninja",
     "ninja_jwt",
+    "ninja_jwt.token_blacklist",
+    "accounts",
 ]
 
 MIDDLEWARE = [
