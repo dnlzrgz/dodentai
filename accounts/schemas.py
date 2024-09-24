@@ -2,10 +2,14 @@ from ninja import Schema
 from pydantic import EmailStr
 
 
-class UserIn(Schema):
+class BaseUser(Schema):
     email: EmailStr
     username: str
     password: str
+
+
+class UserIn(BaseUser):
+    pass
 
 
 class UserOut(Schema):
@@ -13,13 +17,13 @@ class UserOut(Schema):
     username: str
 
 
-class UserUpdateIn(Schema):
-    email: EmailStr | None = None
-    username: str | None = None
-    password: str | None = None
+class UserUpdateIn(BaseUser):
+    email: EmailStr | None = None  # type: ignore
+    username: str | None = None  # type: ignore
+    password: str | None = None  # type: ignore
 
 
-class UserLogin(UserIn):
+class UserLogin(BaseUser):
     email: str | None = None  # type: ignore
 
 

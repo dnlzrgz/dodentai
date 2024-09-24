@@ -87,11 +87,7 @@ class UserAuthTest(TestCase):
         self._register_user()
         token = self._login_user()
 
-        update_data = {
-            "username": "updateduser",
-            "email": "updateduser@testing.com",
-            "password": "ctWUso5d",
-        }
+        update_data = {"email": "updateduser@testing.com"}
 
         response = self.client.put(
             "/user",
@@ -99,7 +95,7 @@ class UserAuthTest(TestCase):
             headers={"Authorization": f"Bearer {token}"},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["username"], update_data["username"])
+        self.assertEqual(response.json()["email"], update_data["email"])
 
     def test_update_user_without_body(self):
         self._register_user()

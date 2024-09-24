@@ -45,15 +45,9 @@ def get_user(request):
 
 @router.put("/user", auth=JWTAuth(), response={200: UserOut, 401: Message})
 def update_user(request, data: UserUpdateIn):
-    current_user = request.user
+    user = request.user
+    for attr, value in data.dict(exclude_unset=True).items():
+        setattr(user, attr, value)
 
-    if data.username:
-        current_user.username = data.username
-    if data.email:
-        current_user.email = data.email
-    if data.password:
-        current_user.password = data.password
-
-    current_user.save()
-
-    return 200, current_user
+    user.save()
+    return 200, user

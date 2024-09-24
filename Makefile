@@ -13,6 +13,12 @@ update:
 test:
 	uv run python manage.py test
 
+test-accounts:
+	uv run python manage.py test accounts
+
+test-profiles:
+	uv run python manage.py test profiles
+
 check:
 	uv run python manage.py check
 	uv run phython manage.py check --deploy

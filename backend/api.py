@@ -7,4 +7,4 @@ api = NinjaAPI()
 
 api.add_router("/token/", router=obtain_pair_router, tags=["Auth"])
 api.add_router("/", router=accounts_router, tags=["Auth"])
-api.add_router("/profiles", router=profiles_router, tags=["Profile"])
+api.add_router("/profile/", router=profiles_router, tags=["Profile"])
