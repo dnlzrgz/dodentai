@@ -15,6 +15,7 @@ def get_profile(request, username: str):
     # TODO: handle if user not authenticated
     user = get_object_or_404(User, username=username)
     profile = get_object_or_404(Profile, user=user)
+
     return profile
 
 

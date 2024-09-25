@@ -4,7 +4,6 @@ from ninja import Schema
 
 class UserDetails(Schema):
     username: str
-    email: str
 
 
 class BaseProfile(Schema):
