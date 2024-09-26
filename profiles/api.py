@@ -1,15 +1,15 @@
-from typing import Any
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from ninja import Router
 from ninja_jwt.authentication import JWTAuth
 from profiles.models import Profile
-from profiles.schemas import ProfileOut, ProfileUpdateIn
+from schemas.common import Message
+from schemas.profile import ProfileOut, ProfileUpdateIn
 
 router = Router()
 
 
-@router.get("/{username}", response={200: ProfileOut, 404: Any})
+@router.get("/{username}", response={200: ProfileOut, 404: Message})
 def get_profile(request, username: str):
     # TODO: handle if user == request.user
     # TODO: handle if user not authenticated
@@ -19,7 +19,7 @@ def get_profile(request, username: str):
     return profile
 
 
-@router.put("/", auth=JWTAuth(), response={200: ProfileOut, 401: Any})
+@router.put("/", auth=JWTAuth(), response={200: ProfileOut, 401: Message})
 def update_user_profile(request, data: ProfileUpdateIn):
     profile = get_object_or_404(Profile, user=request.user)
     for attr, value in data.dict(exclude_unset=True).items():

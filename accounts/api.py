@@ -4,13 +4,12 @@ from django.db import IntegrityError
 from ninja import Router
 from ninja_jwt.tokens import AccessToken
 from ninja_jwt.authentication import JWTAuth
-from accounts.schemas import (
+from schemas.common import Message, Token
+from schemas.user import (
     UserIn,
     UserLogin,
     UserOut,
     UserUpdateIn,
-    Message,
-    Token,
 )
 
 router = Router()
@@ -23,7 +22,7 @@ def account_registration(request, data: UserIn):
         user.set_password(data.password)
         user.save()
     except IntegrityError:
-        return 409, {"message": "User already exists"}
+        return 409, {"details": "User already exists"}
 
     return 201, user
 
@@ -32,7 +31,7 @@ def account_registration(request, data: UserIn):
 def account_login(request, data: UserLogin):
     user = authenticate(username=data.username, password=data.password)
     if not user:
-        return 401, {"message": "Incorrect credentials"}
+        return 401, {"details": "Incorrect credentials"}
 
     jwt_token = AccessToken.for_user(user)
     return 200, {"token": str(jwt_token)}

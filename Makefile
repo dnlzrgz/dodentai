@@ -19,6 +19,9 @@ test-accounts:
 test-profiles:
 	uv run python manage.py test profiles
 
+test-social:
+	uv run python manage.py test social
+
 check:
 	uv run python manage.py check
 	uv run phython manage.py check --deploy

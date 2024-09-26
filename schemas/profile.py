@@ -1,9 +1,6 @@
 from datetime import date, datetime
 from ninja import Schema
-
-
-class UserDetails(Schema):
-    username: str
+from schemas.user import UserDetails
 
 
 class BaseProfile(Schema):

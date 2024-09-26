@@ -8,6 +8,10 @@ class BaseUser(Schema):
     password: str
 
 
+class UserDetails(Schema):
+    username: str
+
+
 class UserIn(BaseUser):
     pass
 
@@ -25,11 +29,3 @@ class UserUpdateIn(BaseUser):
 
 class UserLogin(BaseUser):
     email: str | None = None  # type: ignore
-
-
-class Token(Schema):
-    token: str
-
-
-class Message(Schema):
-    message: str
