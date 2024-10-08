@@ -48,12 +48,12 @@ class SocialTest(TestCase):
                 self.user_data["password"],
             )
 
-    def _get_token(self) -> str:
+    def _get_access_token(self) -> str:
         refresh = RefreshToken.for_user(self.user)
         return f"{refresh.access_token}"
 
     def test_user_can_not_follow_itself(self) -> None:
-        token = self._get_token()
+        token = self._get_access_token()
         response = self.client.post(
             f"/{self.user_data['username']}/follow",
             headers={"Authorization": f"Bearer {token}"},
@@ -61,7 +61,7 @@ class SocialTest(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_user_can_follow_other_users(self) -> None:
-        token = self._get_token()
+        token = self._get_access_token()
         follow_username = self.follows[0]["username"]
 
         # Make follow request
@@ -80,7 +80,7 @@ class SocialTest(TestCase):
         self.assertEqual(response.json()["count"], 1)
 
     def test_user_can_unfollow_users(self) -> None:
-        token = self._get_token()
+        token = self._get_access_token()
         follow_username = self.follows[0]["username"]
 
         # Make follow request
@@ -106,7 +106,7 @@ class SocialTest(TestCase):
         self.assertEqual(response.json()["count"], 0)
 
     def test_get_following_list(self) -> None:
-        token = self._get_token()
+        token = self._get_access_token()
 
         # Make follow requests
         for follow in self.follows:

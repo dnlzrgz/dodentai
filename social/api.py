@@ -27,21 +27,21 @@ def follow(request, username: str):
     following_user = get_object_or_404(User, username=username)
 
     if following_user == follower_user:
-        return 403, {"details": "You cannot follow yourself"}
+        return 403, {"detail": "You cannot follow yourself"}
 
     try:
         follow_in_db = Follow.objects.get(
             follower=follower_user, following=following_user
         )
         follow_in_db.delete()
-        return 200, {"details": f"You have unfollowed {following_user.username}"}
+        return 200, {"detail": f"You have unfollowed {following_user.username}"}
     except Follow.DoesNotExist:
         Follow.objects.create(follower=follower_user, following=following_user)
-        return 200, {"details": f"You are now following {following_user.username}"}
+        return 200, {"detail": f"You are now following {following_user.username}"}
     except ValidationError as e:
-        return 400, {"details": f"{e}"}
+        return 400, {"detail": f"{e}"}
     except Exception as e:
-        return 409, {"details": f"An error occurred: {e}"}
+        return 409, {"detail": f"An error occurred: {e}"}
 
 
 @router.get(

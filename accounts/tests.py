@@ -1,7 +1,10 @@
 import json
+from django.contrib.auth.models import User
 from django.test import TestCase
 from ninja.testing import TestClient
+from ninja_jwt.tokens import RefreshToken
 from accounts.api import router
+from schemas import user
 
 
 class UserAuthTest(TestCase):
@@ -19,24 +22,21 @@ class UserAuthTest(TestCase):
         }
 
     def _register_user(self):
+        username = self.user_data["username"]
+
         response = self.client.post(
             "/users",
             data=json.dumps(self.user_data),
         )
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json()["username"], self.user_data["username"])
+        self.assertEqual(response.json()["username"], username)
 
-        return response
+        self.user = User.objects.filter(username=username).first()
+        assert self.user
 
-    def _login_user(self):
-        response = self.client.post(
-            "/users/login",
-            data=json.dumps(self.login_data),
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("token", response.json())
-
-        return response.json()["token"]
+    def _get_access_token(self) -> str:
+        refresh = RefreshToken.for_user(self.user)
+        return f"{refresh.access_token}"
 
     def test_user_registration(self):
         self._register_user()
@@ -50,26 +50,9 @@ class UserAuthTest(TestCase):
         )
         self.assertEqual(response.status_code, 409)
 
-    def test_user_login(self):
-        self._register_user()
-        self._login_user()
-
-    def test_user_login_with_incorrect_credentials(self):
-        self._register_user()
-
-        login_data = {
-            "username": "testuser",
-            "password": "wrongpassword",
-        }
-        response = self.client.post(
-            "/users/login",
-            data=json.dumps(login_data),
-        )
-        self.assertEqual(response.status_code, 401)
-
     def test_get_current_user(self):
         self._register_user()
-        token = self._login_user()
+        token = self._get_access_token()
 
         response = self.client.get(
             "/user",
@@ -85,7 +68,7 @@ class UserAuthTest(TestCase):
 
     def test_update_user(self):
         self._register_user()
-        token = self._login_user()
+        token = self._get_access_token()
 
         update_data = {"email": "updateduser@testing.com"}
 
@@ -99,7 +82,7 @@ class UserAuthTest(TestCase):
 
     def test_update_user_without_body(self):
         self._register_user()
-        token = self._login_user()
+        token = self._get_access_token()
 
         response = self.client.put(
             "/user",

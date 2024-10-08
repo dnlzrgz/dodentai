@@ -39,15 +39,19 @@ if DEBUG:
 # Application definition
 
 INSTALLED_APPS = [
+    # 1st party
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # 3rd party
     "ninja",
     "ninja_jwt",
     "ninja_jwt.token_blacklist",
+    "corsheaders",
+    # Internal
     "accounts",
     "profiles",
     "social",
@@ -56,6 +60,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -140,6 +145,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+APPEND_SLASH = True
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -152,3 +159,9 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# CORS
+# https://github.com/adamchainz/django-cors-headers
+
+CORS_ALLOWED_ORIGINS = env.list("DJANGO_CORS_ALLOWED_ORIGINS", [])
+CORS_ALLOW_ALL_ORIGINS = True

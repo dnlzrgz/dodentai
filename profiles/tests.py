@@ -22,8 +22,8 @@ class ProfileTest(TestCase):
         }
 
         self.login_data = {
-            "username": "testuser",
-            "password": "JMdbdV2f",
+            "username": self.user_data["username"],
+            "password": self.user_data["password"],
         }
 
         self.user = User.objects.create_user(
@@ -32,7 +32,7 @@ class ProfileTest(TestCase):
             self.user_data["password"],
         )
 
-    def _get_token(self) -> str:
+    def _get_access_token(self) -> str:
         refresh = RefreshToken.for_user(self.user)
         return f"{refresh.access_token}"
 
@@ -41,18 +41,18 @@ class ProfileTest(TestCase):
         self.assertIsNotNone(profile)
 
     def test_get_user_profile(self):
-        response = self.client.get("/testuser")
+        response = self.client.get(f"/{self.user_data['username']}")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json()["user"]["username"], self.user_data["username"]
         )
 
     def test_get_non_existant_user_profile(self):
-        response = self.client.get("/otheruser")
+        response = self.client.get("/none")
         self.assertEqual(response.status_code, 404)
 
     def test_update_user_profile(self):
-        token = self._get_token()
+        token = self._get_access_token()
 
         update_data = {"biography": "Django developer."}
 
