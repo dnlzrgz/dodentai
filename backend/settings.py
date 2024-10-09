@@ -50,11 +50,13 @@ INSTALLED_APPS = [
     "ninja",
     "ninja_jwt",
     "ninja_jwt.token_blacklist",
+    "taggit",
     "corsheaders",
     # Internal
     "accounts",
     "profiles",
     "social",
+    "articles",
 ]
 
 MIDDLEWARE = [
@@ -159,6 +161,15 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Taggit
+# https://django-taggit.readthedocs.io/en/latest/
+
+TAGGIT_CASE_INSENSITIVE = env.bool("TAGGIT_CASE_INSENSITIVE", True)
+TAGGIT_STRIP_UNICODE_WHEN_SLUGIFYING = env.bool(
+    "TAGGIT_STRIP_UNICODE_WHEN_SLUGIFYING", False
+)
+
 
 # CORS
 # https://github.com/adamchainz/django-cors-headers

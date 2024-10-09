@@ -4,7 +4,6 @@ from django.test import TestCase
 from ninja.testing import TestClient
 from ninja_jwt.tokens import RefreshToken
 from accounts.api import router
-from schemas import user
 
 
 class UserAuthTest(TestCase):
