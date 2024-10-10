@@ -4,8 +4,6 @@ from ninja import Router
 from ninja_jwt.authentication import JWTAuth
 from pydantic import ValidationError
 from schemas.common import Message
-from schemas.social import Count
-from schemas.user import UserDetails
 from social.models import Follow
 
 router = Router()
@@ -47,44 +45,22 @@ def follow(request, username: str):
 @router.get(
     "/{username}/followers",
     auth=JWTAuth(),
-    response={200: list[UserDetails], 403: Message, 404: Message},
+    response={200: list[str], 403: Message, 404: Message},
 )
 def get_followers(request, username: str):
     user = get_object_or_404(User, username=username)
 
     followers = user.followers.select_related("follower").only("follower__username")
-    return [UserDetails.from_orm(follow.follower) for follow in followers]
-
-
-@router.get(
-    "/{username}/followers/count",
-    auth=JWTAuth(),
-    response={200: Count, 403: Message, 404: Message},
-)
-def get_followers_count(request, username: str):
-    user = get_object_or_404(User, username=username)
-    follower_count = user.followers.count()
-    return 200, {"count": follower_count}
+    return [follow.follower.username for follow in followers]
 
 
 @router.get(
     "/{username}/following",
     auth=JWTAuth(),
-    response={200: list[UserDetails], 403: Message, 404: Message},
+    response={200: list[str], 403: Message, 404: Message},
 )
 def get_following(request, username: str):
     user = get_object_or_404(User, username=username)
 
     following = user.following.select_related("following").only("following__username")
-    return [UserDetails.from_orm(follow.following) for follow in following]
-
-
-@router.get(
-    "/{username}/following/count",
-    auth=JWTAuth(),
-    response={200: Count, 403: Message, 404: Message},
-)
-def get_following_count(request, username: str):
-    user = get_object_or_404(User, username=username)
-    following_count = user.following.count()
-    return 200, {"count": following_count}
+    return [follow.following.username for follow in following]

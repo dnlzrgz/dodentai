@@ -1,6 +1,5 @@
 from datetime import date, datetime
 from ninja import Schema
-from schemas.user import UserDetails
 
 
 class BaseProfile(Schema):
@@ -15,7 +14,11 @@ class ProfileIn(BaseProfile):
 
 
 class ProfileOut(BaseProfile):
-    user: UserDetails
+    username: str | None = None
+
+    followers_count: int = 0
+    following_count: int = 0
+
     joined_at: datetime
     last_active: datetime
 

@@ -43,9 +43,7 @@ class ProfileTest(TestCase):
     def test_get_user_profile(self):
         response = self.client.get(f"/{self.user_data['username']}")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.json()["user"]["username"], self.user_data["username"]
-        )
+        self.assertEqual(response.json()["username"], self.user_data["username"])
 
     def test_get_non_existant_user_profile(self):
         response = self.client.get("/none")

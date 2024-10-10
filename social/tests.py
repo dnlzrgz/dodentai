@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from ninja.testing import TestClient
 from ninja_jwt.tokens import RefreshToken
+from social.models import Follow
 from social.api import router
 
 
@@ -71,13 +72,8 @@ class SocialTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-        # Check following count
-        response = self.client.get(
-            f"/{self.user_data['username']}/following/count",
-            headers={"Authorization": f"Bearer {token}"},
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["count"], 1)
+        following_count = Follow.objects.filter(follower=self.user).count()
+        self.assertEqual(following_count, 1)
 
     def test_user_can_unfollow_users(self) -> None:
         token = self._get_access_token()
@@ -97,13 +93,8 @@ class SocialTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-        # Check following count
-        response = self.client.get(
-            f"/{self.user_data['username']}/following/count",
-            headers={"Authorization": f"Bearer {token}"},
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["count"], 0)
+        following_count = Follow.objects.filter(follower=self.user).count()
+        self.assertEqual(following_count, 0)
 
     def test_get_following_list(self) -> None:
         token = self._get_access_token()

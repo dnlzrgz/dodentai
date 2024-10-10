@@ -8,10 +8,6 @@ class BaseUser(Schema):
     password: str
 
 
-class UserDetails(Schema):
-    username: str
-
-
 class UserIn(BaseUser):
     pass
 

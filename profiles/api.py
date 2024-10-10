@@ -5,6 +5,7 @@ from ninja_jwt.authentication import JWTAuth
 from profiles.models import Profile
 from schemas.common import Message
 from schemas.profile import ProfileOut, ProfileUpdateIn
+from social.models import Follow
 
 router = Router()
 
@@ -16,7 +17,15 @@ def get_profile(request, username: str):
     user = get_object_or_404(User, username=username)
     profile = get_object_or_404(Profile, user=user)
 
-    return profile
+    followers_count = Follow.objects.filter(following=user).count()
+    following_count = Follow.objects.filter(follower=user).count()
+
+    profile_out = ProfileOut.from_orm(profile)
+    profile_out.username = f"{user.username}"
+    profile_out.followers_count = followers_count
+    profile_out.following_count = following_count
+
+    return profile_out
 
 
 @router.put("/", auth=JWTAuth(), response={200: ProfileOut, 401: Message})
