@@ -1,9 +1,9 @@
+from typing import Any
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from ninja import Router
 from ninja_jwt.authentication import JWTAuth
 from pydantic import ValidationError
-from schemas.common import Message
 from social.models import Follow
 
 router = Router()
@@ -13,11 +13,11 @@ router = Router()
     "/{username}/follow",
     auth=JWTAuth(),
     response={
-        200: Message,
-        400: Message,
-        403: Message,
-        404: Message,
-        409: Message,
+        200: Any,
+        400: Any,
+        403: Any,
+        404: Any,
+        409: Any,
     },
 )
 def follow(request, username: str):
@@ -45,7 +45,7 @@ def follow(request, username: str):
 @router.get(
     "/{username}/followers",
     auth=JWTAuth(),
-    response={200: list[str], 403: Message, 404: Message},
+    response={200: list[str], 403: Any, 404: Any},
 )
 def get_followers(request, username: str):
     user = get_object_or_404(User, username=username)
@@ -57,7 +57,7 @@ def get_followers(request, username: str):
 @router.get(
     "/{username}/following",
     auth=JWTAuth(),
-    response={200: list[str], 403: Message, 404: Message},
+    response={200: list[str], 403: Any, 404: Any},
 )
 def get_following(request, username: str):
     user = get_object_or_404(User, username=username)
