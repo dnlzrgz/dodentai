@@ -28,7 +28,7 @@ def get_profile(request, username: str):
     return profile_out
 
 
-@router.put("/", auth=JWTAuth(), response={200: ProfileOut, 401: Any})
+@router.put("/", auth=JWTAuth(), response={200: ProfileOut, 401: Any, 404: Any})
 def update_user_profile(request, data: ProfileUpdateIn):
     profile = get_object_or_404(Profile, user=request.user)
     for attr, value in data.dict(exclude_unset=True).items():

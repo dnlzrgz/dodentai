@@ -1,6 +1,6 @@
 from datetime import datetime
 from ninja import Schema
-from pydantic import BaseModel, SerializeAsAny
+from pydantic import BaseModel, SerializeAsAny, field_validator
 from profiles.models import Profile
 from profiles.schemas import ProfileOut
 
@@ -9,29 +9,26 @@ class Empty(BaseModel):
     pass
 
 
-class ArticleIn(Schema):
+class ArticleBase(Schema):
     title: str
     slug: str
     summary: str
     tags: list[str]
-
+    meta_description: str
     content: str
 
-    meta_description: str
+
+class ArticleIn(ArticleBase):
+    pass
+
+    @field_validator("slug")
+    def ensure_slug_is_lowercase(cls, value):
+        return value.lower() if isinstance(value, str) else value
 
 
-class ArticleOut(Schema):
+class ArticleOut(ArticleBase):
     user_profile: ProfileOut
-
-    title: str
-    slug: str
-    summary: str
     tags: SerializeAsAny[list[str]]
-
-    content: str
-
-    meta_description: str
-
     created_at: datetime
 
     @staticmethod
@@ -44,3 +41,16 @@ class ArticleOut(Schema):
         return (
             obj.tags if isinstance(obj.tags, list) else [t.name for t in obj.tags.all()]
         )
+
+
+class ArticleUpdate(ArticleBase):
+    title: str | None = None  # type: ignore
+    slug: str | None = None  # type: ignore
+    summary: str | None = None  # type: ignore
+    tags: list[str] | None = None  # type: ignore
+    meta_description: str | None = None  # type: ignore
+    content: str | None = None  # type: ignore
+
+    @field_validator("slug")
+    def ensure_slug_is_lowercase(cls, value):
+        return value.lower() if isinstance(value, str) else value
