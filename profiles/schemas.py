@@ -14,13 +14,17 @@ class ProfileIn(BaseProfile):
 
 
 class ProfileOut(BaseProfile):
-    username: str | None = None
+    username: str
 
     followers_count: int = 0
     following_count: int = 0
 
     joined_at: datetime
     last_active: datetime
+
+    @staticmethod
+    def resolve_username(obj):
+        return obj.user.username
 
 
 class ProfileUpdateIn(BaseProfile):

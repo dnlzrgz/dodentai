@@ -14,7 +14,6 @@ class Article(models.Model):
     content = models.TextField(blank=True)
 
     meta_description = models.CharField(max_length=160, blank=True)
-    meta_keywords = models.CharField(max_length=255, blank=True)
 
     created_at = models.DateTimeField(auto_now=True)
     last_updated_at = models.DateTimeField(auto_now=True)
