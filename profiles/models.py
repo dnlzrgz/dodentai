@@ -11,7 +11,7 @@ class Profile(models.Model):
     location = models.CharField(max_length=30, blank=True, null=True)
 
     joined_at = models.DateTimeField(auto_now_add=True)
-    last_active = models.DateTimeField(auto_now=True)
+    last_active_at = models.DateTimeField(auto_now=True)
     last_updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

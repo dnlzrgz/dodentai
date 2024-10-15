@@ -22,5 +22,6 @@ dev-dependencies = [
     "commitizen>=3.29.1",
     "djhtml>=3.0.6",
     "environs>=11.0.0",
+    "faker>=30.3.0",
     "ruff>=0.6.9",
 ]
