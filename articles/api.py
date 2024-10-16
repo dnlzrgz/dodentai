@@ -9,15 +9,26 @@ from articles.schemas import Empty, ArticleIn, ArticleOut, ArticleUpdate
 router = Router()
 
 
-@router.post("/", auth=JWTAuth(), response={201: ArticleOut, 409: Any, 422: Any})
+@router.post(
+    "/",
+    auth=JWTAuth(),
+    response={
+        201: ArticleOut,
+        409: Any,
+        422: Any,
+    },
+)
 def create_article(request, data: ArticleIn):
+    if Article.objects.filter(slug=data.slug).exists():
+        return 409, {"detail": "This slug already exists."}
+
     try:
         article = Article.objects.create(
             **{k: v for k, v in data.dict().items() if k != "tags"},
             user=request.user,
         )
     except IntegrityError as err:
-        return 409, {"detail": err}
+        return 422, {"detail": f"{err}"}
 
     if data.tags != Empty:
         for tag_name in data.tags:
