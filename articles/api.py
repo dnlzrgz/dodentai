@@ -2,6 +2,7 @@ from typing import Any
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from ninja import Router
+from ninja.pagination import PageNumberPagination, paginate
 from ninja_jwt.authentication import JWTAuth
 from articles.models import Article
 from articles.schemas import Empty, ArticleIn, ArticleOut, ArticleUpdate
@@ -42,6 +43,13 @@ def create_article(request, data: ArticleIn):
 @router.get("/{slug}", response={200: ArticleOut, 404: Any})
 def get_article(request, slug: str):
     return get_object_or_404(Article, slug=slug)
+
+
+@router.get("/", response={200: list[ArticleOut]})
+@paginate(PageNumberPagination, page_size=10)
+def list_articles(request):
+    # TODO: sort by publication date
+    return Article.objects.all()
 
 
 @router.put("/{slug}", auth=JWTAuth(), response={200: ArticleOut, 401: Any, 404: Any})
